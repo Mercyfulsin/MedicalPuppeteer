@@ -1,11 +1,11 @@
-#MedicalPuppeteer
+# MedicalPuppeteer
 
-#Requirements
--Node 7+
--Puppeteer
--creds.js
+# Requirements
+- Node 7+
+- Puppeteer
+- creds.js
 
-#Login
+# Login
 Have creds.js export credential variables
 ```
 module.exports = {
