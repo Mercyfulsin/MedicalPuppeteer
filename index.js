@@ -12,7 +12,7 @@ const SUBMIT = '#middle_column > div.column_inner > form > div:nth-child(2) > in
 const URL = 'https://www.medi-cal.ca.gov/Eligibility/Login.asp';
 
 async function run() {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL, {
         waitUntil: 'networkidle2',
@@ -34,9 +34,10 @@ async function run() {
     await page.click(DOI);
     await page.keyboard.type(ISSUE_DATE);
     await page.click(SUBMIT);
-    await page.waitForNavigation();
+    await page.waitForNavigation({ timeout: 1000, waitUntil: 'load' }).catch(err => console.log(err));
     console.log("@Resultant Page");
-    // browser.close();
+    const data = await page.$$eval('center > b', info => info.map(item => item.innerHTML));
+    console.log(data);
+    browser.close();
 }
-
 run();
