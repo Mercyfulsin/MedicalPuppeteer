@@ -28,7 +28,7 @@ var Limit = 1000;
 
 async function run() {
     //#region Initiate Browser
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.goto(URL, {
         waitUntil: 'networkidle2',
@@ -45,7 +45,7 @@ async function run() {
     //#endregion
 
     console.log(CREDS.cst_DOS.length)
-    for (var i = Limit-1000; i < Limit; i++) {
+    for (var i = Limit - 1000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -58,7 +58,7 @@ async function run() {
             await page.click(CST_DOS);
             await page.type(CST_DOS, temp_DOS);
             await page.click(LOGIN);
-            await page.waitForNavigation({ timeout: 4000, waitUntil: 'load' }).catch(err => console.log(err));
+            await page.waitForNavigation({ timeout: 10000, waitUntil: 'load' }).catch(err => console.log(err));
             //console.log("@Resultant Page");
             const SUBSCRIBER_ID = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(2) > b', info => info.map(item => item.innerHTML));
             const CLAIM = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
@@ -68,6 +68,10 @@ async function run() {
             console.log(`DHS: ${i}`);
         }
     }
+    fs.writeFile(`DHS_${Limit - 1000}_${Limit}.txt`, DHS, function (err) {
+        if (err) return console.log(err);
+        console.log(`List {${Limit - 1000} - ${Limit}} Generated in project directory > DHS_${Limit - 1000}_${Limit}.txt`);
+    });
     //#endregion
     page.goto(LOGOUT, { waitUntil: 'networkidle2' });
     await page.goto(URL, {
@@ -80,7 +84,7 @@ async function run() {
     await page.keyboard.type(CREDS.password1);
     await page.click(LOGIN);
     console.log(CREDS.cst_DOS.length);
-    for (var i = Limit-1000; i < Limit; i++) {
+    for (var i = Limit - 1000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -97,7 +101,7 @@ async function run() {
             await page.click(CST_DOS);
             await page.type(CST_DOS, temp_DOS);
             await page.click(LOGIN);
-            await page.waitForNavigation({ timeout: 4000, waitUntil: 'load' }).catch(err => console.log(err));
+            await page.waitForNavigation({ timeout: 10000, waitUntil: 'load' }).catch(err => console.log(err));
             //console.log("@Resultant Page");
             const SUBSCRIBER_ID = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(2) > b', info => info.map(item => item.innerHTML));
             const CLAIM = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
@@ -107,6 +111,10 @@ async function run() {
             console.log(`EC: ${i}`);
         }
     }
+    fs.writeFile(`EC_${Limit - 1000}_${Limit}.txt`, EC, function (err) {
+        if (err) return console.log(err);
+        console.log(`List {${Limit - 1000} - ${Limit}} Generated in project directory > EC_${Limit - 1000}_${Limit}.txt`);
+    });
     //#region Eligiblity Process 
     // await page.click(POLICY);
     // await page.keyboard.type(CREDS.policy);
@@ -119,10 +127,10 @@ async function run() {
     // await page.click(SUBMIT);
     //#endregion
     console.log("Final", result);
-    fs.writeFile(`Final_${Limit-1000}_${Limit}.txt`,result,function (err) {
+    fs.writeFile(`Final_${Limit - 1000}_${Limit}.txt`, result, function (err) {
         if (err) return console.log(err);
-        console.log(`List {${Limit-1000} - ${Limit}} Generated in project directory > Final_${Limit-1000}_${Limit}.txt`);
-      });
+        console.log(`List {${Limit - 1000} - ${Limit}} Generated in project directory > Final_${Limit - 1000}_${Limit}.txt`);
+    });
     //console.log("EC", EC);
     //console.log("DHS", DHS);
 
