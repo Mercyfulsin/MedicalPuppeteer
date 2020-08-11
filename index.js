@@ -23,6 +23,7 @@ const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
 var result = [];
 var DHS = [];
 var EC = [];
+var Limit = 1000;
 //#endregion
 
 async function run() {
@@ -44,7 +45,7 @@ async function run() {
     //#endregion
 
     console.log(CREDS.cst_DOS.length)
-    for (var i = 0; i < CREDS.cst_DOS.length; i++) {
+    for (var i = Limit-1000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -79,7 +80,7 @@ async function run() {
     await page.keyboard.type(CREDS.password1);
     await page.click(LOGIN);
     console.log(CREDS.cst_DOS.length);
-    for (var i = 0; i < CREDS.cst_DOS.length; i++) {
+    for (var i = Limit-1000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -118,9 +119,9 @@ async function run() {
     // await page.click(SUBMIT);
     //#endregion
     console.log("Final", result);
-    fs.writeFile('Final.txt',result,function (err) {
+    fs.writeFile(`Final_${Limit-1000}_${Limit}.txt`,result,function (err) {
         if (err) return console.log(err);
-        console.log('List Generated in project directory > Final.txt');
+        console.log(`List {${Limit-1000} - ${Limit}} Generated in project directory > Final_${Limit-1000}_${Limit}.txt`);
       });
     //console.log("EC", EC);
     //console.log("DHS", DHS);
