@@ -23,7 +23,7 @@ const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
 var result = [];
 var DHS = [];
 var EC = [];
-var Limit = 1000;
+var Limit = 10043;
 //#endregion
 
 async function run() {
@@ -45,7 +45,7 @@ async function run() {
     //#endregion
 
     console.log(CREDS.cst_DOS.length)
-    for (var i = Limit-1000; i < Limit; i++) {
+    for (var i = 10000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -64,8 +64,9 @@ async function run() {
             const CLAIM = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
             const EFT = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(5) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
             const DATE = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(5) > td:nth-child(2) > b', info => info.map(item => item.innerHTML));
-            EFT != '' ? DHS[i] = result[i] = `${SUBSCRIBER_ID}, ${CLAIM}, ${EFT}, ${DATE}` : DHS[i] = result[i] = `NONE`;
-            console.log(`DHS: ${i}`);
+            const PAID_AMOUNT = await page.$$eval('#MainContent_dvOut > center:nth-child(1) > table > tbody > tr:nth-child(6) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
+            EFT != '' ? DHS[i] = result[i] = `${SUBSCRIBER_ID}, ${CLAIM}, ${EFT}, ${PAID_AMOUNT}$, ${DATE}` : DHS[i] = result[i] = `NONE`;
+            console.log(`DHS: ${i}, ${PAID_AMOUNT}`);
         }
     }
     //#endregion
@@ -80,7 +81,7 @@ async function run() {
     await page.keyboard.type(CREDS.password1);
     await page.click(LOGIN);
     console.log(CREDS.cst_DOS.length);
-    for (var i = Limit-1000; i < Limit; i++) {
+    for (var i = 10000; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -103,8 +104,9 @@ async function run() {
             const CLAIM = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(2) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
             const EFT = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(5) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
             const DATE = await page.$$eval('#MainContent_dvOut > center > table > tbody > tr:nth-child(5) > td:nth-child(2) > b', info => info.map(item => item.innerHTML));
+            const PAID_AMOUNT = await page.$$eval('#MainContent_dvOut > center:nth-child(1) > table > tbody > tr:nth-child(6) > td:nth-child(4) > b', info => info.map(item => item.innerHTML));
             EFT != '' ? EC[i] = result[i] = `${SUBSCRIBER_ID}, ${CLAIM}, ${EFT}, ${DATE}` : EC[i] = result[i] = `NONE`;
-            console.log(`EC: ${i}`);
+            console.log(`EC: ${i}, ${PAID_AMOUNT}`);
         }
     }
     //#region Eligiblity Process 
