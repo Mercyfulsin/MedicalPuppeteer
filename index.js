@@ -1,6 +1,9 @@
 //#region  Constants/Globals
+const myArg = process.argv.slice(2);
 const puppeteer = require('puppeteer');
 const CREDS = require('./creds.js');
+const { cst_DOS, cst_ID } = require('./creds.js');
+const { parse } = require('path');
 const USERNAME = '#MainContent_txtUserID';
 const PASSWORD = '#MainContent_txtPassword';
 const LOGIN = '#MainContent_btnSubmit';
@@ -23,12 +26,14 @@ const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
 var result = [];
 var DHS = [];
 var EC = [];
-var Limit = 1000;
+var Limit = parseInt(myArg[1]);
+var Start = parseInt(myArg[0]);
+const HEADLESS = parseInt(myArg[2]);
 //#endregion
 
 async function run() {
     //#region Initiate Browser
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: HEADLESS });
     const page = await browser.newPage();
     await page.goto(URL, {
         waitUntil: 'networkidle2',
@@ -43,20 +48,19 @@ async function run() {
     await page.keyboard.type(CREDS.password);
     await page.click(LOGIN);
     //#endregion
-
-    console.log(CREDS.cst_DOS.length)
-    for (var i = Limit-1000; i < Limit; i++) {
+    console.log(cst_DOS.length)
+    for (var i = Start; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
-        var temp_DOS = CREDS.cst_DOS[i];
-        if (CREDS.cst_DOS[i] == "" || CREDS.cst_ID[i] == "") {
+        var temp_DOS = cst_DOS[i];
+        if (cst_DOS[i] == "" || cst_ID[i] == "") {
             DHS[i] = result[i] = "NOT IN MEDICAL";
         } else {
             //#region Claim Status Transaction Process
             await page.click(CST_ID);
-            await page.keyboard.type(CREDS.cst_ID[i]);
+            await page.keyboard.type(cst_ID[i]);
             await page.click(CST_DOS);
-            await page.type(CST_DOS, temp_DOS);
+            await page.type(CST_DOS, cst_DOS[i]);
             await page.click(LOGIN);
             await page.waitForNavigation({ timeout: 4000, waitUntil: 'load' }).catch(err => console.log(err));
             //console.log("@Resultant Page");
@@ -80,21 +84,21 @@ async function run() {
     await page.click(PASSWORD);
     await page.keyboard.type(CREDS.password1);
     await page.click(LOGIN);
-    console.log(CREDS.cst_DOS.length);
-    for (var i = Limit-1000; i < Limit; i++) {
+    console.log(cst_DOS.length);
+    for (var i = Start; i < Limit; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
-        var temp_DOS = CREDS.cst_DOS[i];
-        if (CREDS.cst_DOS[i] == "" || CREDS.cst_ID[i] == "") {
+        var temp_DOS = cst_DOS[i];
+        if (cst_DOS[i] == "" || cst_ID[i] == "") {
             EC[i] = result[i] = "NOT IN MEDICAL";
         } else if (result[i] != "NONE") {
             EC[i] = "NONE";
             result[i] = result[i];
         } else {
-            temp_DOS = CREDS.cst_DOS[i];
+            temp_DOS = cst_DOS[i];
             //#region Claim Status Transaction Process
             await page.click(CST_ID);
-            await page.keyboard.type(CREDS.cst_ID[i]);
+            await page.keyboard.type(cst_ID[i]);
             await page.click(CST_DOS);
             await page.type(CST_DOS, temp_DOS);
             await page.click(LOGIN);
