@@ -1,6 +1,7 @@
 //#region  Constants/Globals
 const puppeteer = require('puppeteer');
 const CREDS = require('./creds.js');
+const MEDI = require('./MEDI.js');
 const USERNAME = '#MainContent_txtUserID';
 const PASSWORD = '#MainContent_txtPassword';
 const LOGIN = '#MainContent_btnSubmit';
@@ -23,12 +24,12 @@ const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
 var result = [];
 var DHS = [];
 var EC = [];
-var Limit = 1000;
+var Limit = 5000;
 //#endregion
 
 async function run() {
     //#region Initiate Browser
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL, {
         waitUntil: 'networkidle2',
@@ -45,7 +46,7 @@ async function run() {
     //#endregion
 
     console.log(CREDS.cst_DOS.length)
-    for (var i = Limit - 1000; i < Limit; i++) {
+    for (var i = 0; i < MEDI.length; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
@@ -84,7 +85,7 @@ async function run() {
     await page.keyboard.type(CREDS.password1);
     await page.click(LOGIN);
     console.log(CREDS.cst_DOS.length);
-    for (var i = Limit - 1000; i < Limit; i++) {
+    for (var i = 0; i < MEDI.length; i++) {
         await page.goto("https://www.medi-cal.ca.gov/APS/ClaimStatus.aspx", { waitUntil: 'networkidle2' });
         //console.log("@Eligibility Page");
         var temp_DOS = CREDS.cst_DOS[i];
