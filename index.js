@@ -1,51 +1,39 @@
 //#region  Constants/Globals
 const myArg = process.argv.slice(2);
+fs = require('fs');
+
 const puppeteer = require('puppeteer');
 const CREDS = require('./creds.js');
-<<<<<<< HEAD
-const MEDI = require('./MEDI.js');
-=======
 const { cst_DOS, cst_ID } = require('./creds.js');
 const { parse } = require('path');
->>>>>>> 9ecf1dfe19331cbebd42df3d7b7885dd5bffebc9
 const USERNAME = '#MainContent_txtUserID';
 const PASSWORD = '#MainContent_txtPassword';
 const LOGIN = '#MainContent_btnSubmit';
-fs = require('fs');
+const URL = 'https://www.medi-cal.ca.gov/MCWebPub/Login.aspx';
+const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
+
 //Eligiblity
 const POLICY = '#RecipID';
 const DOB = '#RecipDOB';
 const DOS = '#RecipDOS';
 const DOI = '#RecipDOI';
+const ISSUE_DATE = new Date().toLocaleDateString();
+const SUBMIT = '#middle_column > div.column_inner > form > div:nth-child(2) > input[type=submit]:nth-child(1)';
 
 //Claim Status Transcation (PTN)
 const CST_ID = '#MainContent_txtSubscriberID';
 const CST_DOS = '#MainContent_txtDOSFrom';
-
-
-const ISSUE_DATE = new Date().toLocaleDateString();
-const SUBMIT = '#middle_column > div.column_inner > form > div:nth-child(2) > input[type=submit]:nth-child(1)';
-const URL = 'https://www.medi-cal.ca.gov/MCWebPub/Login.aspx';
-const LOGOUT = 'https://www.medi-cal.ca.gov/MCWebPub/Cookiemonster.aspx';
 var result = [];
 var DHS = [];
 var EC = [];
-<<<<<<< HEAD
-var Limit = 5000;
-=======
 var Limit = parseInt(myArg[1]);
 var Start = parseInt(myArg[0]);
 const HEADLESS = parseInt(myArg[2]);
->>>>>>> 9ecf1dfe19331cbebd42df3d7b7885dd5bffebc9
 //#endregion
 
 async function run() {
     //#region Initiate Browser
-<<<<<<< HEAD
-    const browser = await puppeteer.launch({ headless: true });
-=======
     const browser = await puppeteer.launch({ headless: HEADLESS });
->>>>>>> 9ecf1dfe19331cbebd42df3d7b7885dd5bffebc9
     const page = await browser.newPage();
     await page.goto(URL, {
         waitUntil: 'networkidle2',
@@ -141,8 +129,5 @@ async function run() {
         if (err) return console.log(err);
         console.log(`List {${Limit-1000} - ${Limit}} Generated in project directory > Final_${Limit-1000}_${Limit}.txt`);
       });
-    //console.log("EC", EC);
-    //console.log("DHS", DHS);
-
 }
 run();
